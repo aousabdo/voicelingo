@@ -1,0 +1,32 @@
+.shiny-output-error {
+  display: none;
+}
+.shiny-output-error:before {
+  display: none;
+}
+
+.shiny-input-container select {
+  background-color: #34495e;
+  color: white;
+}
+
+.shiny-input-container select {
+  font-size: 18px;
+  height: 48px;
+}
+
+.selectize-input, .selectize-dropdown {
+  background-color: #34495e;
+  color: white;
+}
+.selectize-dropdown {
+  border: none;
+  text-align: left;
+}
+.custom-select .selectize-input {
+  background-color: #34495e;
+}
+.custom-select .selectize-dropdown {
+  color: white;
+  background-color: #2c3e50;
+}

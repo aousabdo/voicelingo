@@ -1,0 +1,13 @@
+name: voicelingo
+title: voicelingo
+username:
+account: analytica
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8911934
+bundleId: 7118802
+url: https://analytica.shinyapps.io/voicelingo/
+when: 1682091957.80832
+lastSyncTime: 1682091957.80833
+asMultiple: FALSE
+asStatic: FALSE
