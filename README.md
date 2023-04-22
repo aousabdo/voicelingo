@@ -15,10 +15,10 @@ VoiceLingo is an AI-powered audio translation and transcription web application 
 
 To run the VoiceLingo application, you need to have R and the following R packages installed:
 
-- shiny
-- shinythemes
-- shinyjs
-- openai
+- `shiny`
+- `shinythemes`
+- `shinyjs`
+- `openai`
 
 ## Usage
 
@@ -31,7 +31,6 @@ To run the VoiceLingo application, you need to have R and the following R packag
 5. The application should open in your default web browser.
 6. Enter your OpenAI API Key and upload an audio file.
 7. Click the "Translate and Transcribe" button to process the audio file.
-8. The transcription and translation will be displayed below the button, and you can download them as text files.
 
 ## Note
 
