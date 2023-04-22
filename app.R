@@ -3,7 +3,6 @@ library(shiny)
 library(shinythemes)
 library(shinyjs)
 library(openai)
-library(howler)
 
 # Define the UI
 ui <- fluidPage(
