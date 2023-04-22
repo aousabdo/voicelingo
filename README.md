@@ -23,7 +23,7 @@ To run the VoiceLingo application, you need to have R and the following R packag
 ## Usage
 
 1. Clone this repository or download the source code:
-`clone https://github.com/aousabdo/voicelingo`
+`git clone https://github.com/aousabdo/voicelingo`
 2. Open the `app.R` file in RStudio or another R IDE.
 3. Install the required packages if you haven't already: install.packages(c("shiny", "shinythemes", "shinyjs", "openai"))
 4. Run the `app.R` file in RStudio or your R IDE.
