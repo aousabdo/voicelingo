@@ -10,7 +10,6 @@ VoiceLingo is an AI-powered audio translation and transcription web application 
 - Translate transcribed text
 - Download transcription and translation as text files
 - Supports various audio formats (mp3, mp4, mpeg, m4a, wav, webm)
-- Dark theme for better user experience
 
 ## Prerequisites
 
