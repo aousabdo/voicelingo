@@ -38,5 +38,5 @@ This application requires an OpenAI API Key, which you can obtain by signing up 
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt).
 
