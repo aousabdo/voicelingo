@@ -1,8 +1,11 @@
 # VoiceLingo
 
-VoiceLingo is an AI-powered audio translation and transcription web application built with R Shiny. It uses the OpenAI Whisper ASR (Automatic Speech Recognition) model to transcribe and translate audio files.
 
-![VoiceLingo Screenshot](screenshot.png)
+VoiceLingo is an AI-powered audio translation and transcription web application built with R Shiny. 
+It uses the [OpenAI Whisper ASR (Automatic Speech Recognition) model](https://openai.com/research/whisper) to transcribe and translate audio files.
+
+
+![](voicelingo_screenshot.png)
 
 ## Features
 
