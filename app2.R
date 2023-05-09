@@ -7,7 +7,7 @@ library(openai)
 # Define the UI
 ui <- fluidPage(
   useShinyjs(),
-  
+
   # Add custom JavaScript function to resize the textarea
   tags$head(
     tags$script(HTML("
@@ -69,7 +69,7 @@ ui <- fluidPage(
                                   , style = "width: 100%; background-color: #1f2130; color: white; font-size: 16px; resize: none; border: 1px solid #1f2130;"),
                     br(),
                     downloadButton("download_transcription", "Download Transcription")
-             ), 
+                    ), 
              column(5, align = "center",
                     # h3("Translation:"),
                     actionButton("translate", "Translate"
@@ -83,7 +83,7 @@ ui <- fluidPage(
                                   , style = "width: 100%; background-color: #1f2130; color: white; font-size: 16px; resize: none; border: 1px solid #1f2130;"),
                     br(),
                     downloadButton("download_translation", "Download Translation")
-                    
+               
              )
            )
     )
