@@ -5,6 +5,7 @@ import AudioUpload from './components/AudioUpload'
 import ResultPanel, { type ExportFormat } from './components/ResultPanel'
 import LanguageSelector from './components/LanguageSelector'
 import BatchPanel, { type BatchFile } from './components/BatchPanel'
+import OnboardingTour from './components/OnboardingTour'
 import Footer from './components/Footer'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import {
@@ -25,6 +26,7 @@ import {
 } from 'lucide-react'
 
 function App() {
+  const [showTour, setShowTour] = useLocalStorage('voicelingo-show-tour', true)
   const [apiKey, setApiKey] = useLocalStorage('voicelingo-api-key', '')
   const [audioFile, setAudioFile] = useState<File | null>(null)
   const [transcription, setTranscription] = useState('')
@@ -206,7 +208,12 @@ function App() {
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-600/5 rounded-full blur-[100px]" />
       </div>
 
-      <Header />
+      {/* Onboarding Tour */}
+      {showTour && (
+        <OnboardingTour onComplete={() => setShowTour(false)} />
+      )}
+
+      <Header onTakeTour={() => setShowTour(true)} />
 
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pb-16">
         {/* Input Section */}

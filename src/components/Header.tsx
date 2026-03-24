@@ -1,8 +1,24 @@
-import { AudioLines } from 'lucide-react'
+import { AudioLines, HelpCircle } from 'lucide-react'
 
-export default function Header() {
+interface Props {
+  onTakeTour?: () => void
+}
+
+export default function Header({ onTakeTour }: Props) {
   return (
-    <header className="pt-12 pb-8 px-4 text-center">
+    <header className="pt-12 pb-8 px-4 text-center relative">
+      {/* Take Tour button */}
+      {onTakeTour && (
+        <button
+          onClick={onTakeTour}
+          className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-gray-500 hover:text-purple-400 hover:bg-purple-500/10 transition-all"
+          title="Take the tour"
+        >
+          <HelpCircle className="w-3.5 h-3.5" />
+          Tour
+        </button>
+      )}
+
       {/* Company badge */}
       <a
         href="https://www.analyticadss.com"
@@ -34,6 +50,15 @@ export default function Header() {
           className="text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors"
         >
           OpenAI Whisper
+        </a>
+        {' & '}
+        <a
+          href="https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors"
+        >
+          GPT-4o
         </a>
       </p>
     </header>
