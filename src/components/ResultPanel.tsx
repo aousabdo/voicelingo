@@ -54,7 +54,7 @@ export default function ResultPanel({
   const charCount = text.length
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden backdrop-blur-sm flex flex-col">
+    <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden backdrop-blur-sm flex flex-col flex-1">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
         <h2 className="text-base font-semibold text-white">{title}</h2>
