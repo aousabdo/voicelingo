@@ -268,7 +268,7 @@ function App() {
 
         {/* Results Grid */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div data-tour="transcription">
+          <div data-tour="transcription" className="flex flex-col">
             <ResultPanel
               title="Transcription"
               placeholder="Transcribed text will appear here..."
@@ -281,7 +281,7 @@ function App() {
               hasTimestamps={segments.length > 0}
             />
           </div>
-          <div data-tour="translation">
+          <div data-tour="translation" className="flex flex-col">
             <ResultPanel
               title="Translation"
               placeholder="Translated text will appear here..."
