@@ -89,6 +89,7 @@ function App() {
             title="Transcription"
             placeholder="Transcribed text will appear here..."
             text={transcription}
+            onChange={setTranscription}
             isLoading={isTranscribing}
             onAction={handleTranscribe}
             actionLabel="Transcribe"
@@ -102,6 +103,7 @@ function App() {
             title="Translation"
             placeholder="Translated text (to English) will appear here..."
             text={translation}
+            onChange={setTranslation}
             isLoading={isTranslating}
             onAction={handleTranslate}
             actionLabel="Translate"

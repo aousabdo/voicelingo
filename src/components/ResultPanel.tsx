@@ -4,6 +4,7 @@ interface Props {
   title: string
   placeholder: string
   text: string
+  onChange: (text: string) => void
   isLoading: boolean
   onAction: () => void
   actionLabel: string
@@ -14,6 +15,7 @@ export default function ResultPanel({
   title,
   placeholder,
   text,
+  onChange,
   isLoading,
   onAction,
   actionLabel,
@@ -40,8 +42,8 @@ export default function ResultPanel({
       {/* Text area */}
       <div className="p-5">
         <textarea
-          readOnly
           value={text}
+          onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={8}
           className="w-full bg-transparent text-gray-200 placeholder-gray-600 text-sm leading-relaxed resize-none focus:outline-none"

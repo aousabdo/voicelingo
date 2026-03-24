@@ -5,17 +5,24 @@ export async function transcribeAudio(file: File, apiKey: string): Promise<strin
   formData.append('file', file)
   formData.append('model', 'whisper-1')
 
-  const response = await fetch(`${WHISPER_API_URL}/transcriptions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: formData,
-  })
+  let response: Response
+  try {
+    response = await fetch(`${WHISPER_API_URL}/transcriptions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: formData,
+    })
+  } catch (e) {
+    throw new Error(
+      `Network error: Could not reach OpenAI. Please check your API key and internet connection. (${e instanceof Error ? e.message : 'Unknown error'})`
+    )
+  }
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}))
-    throw new Error(err?.error?.message || `API error: ${response.status}`)
+    throw new Error(err?.error?.message || `API error: ${response.status} ${response.statusText}`)
   }
 
   const data = await response.json()
@@ -27,17 +34,24 @@ export async function translateAudio(file: File, apiKey: string): Promise<string
   formData.append('file', file)
   formData.append('model', 'whisper-1')
 
-  const response = await fetch(`${WHISPER_API_URL}/translations`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: formData,
-  })
+  let response: Response
+  try {
+    response = await fetch(`${WHISPER_API_URL}/translations`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: formData,
+    })
+  } catch (e) {
+    throw new Error(
+      `Network error: Could not reach OpenAI. Please check your API key and internet connection. (${e instanceof Error ? e.message : 'Unknown error'})`
+    )
+  }
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}))
-    throw new Error(err?.error?.message || `API error: ${response.status}`)
+    throw new Error(err?.error?.message || `API error: ${response.status} ${response.statusText}`)
   }
 
   const data = await response.json()
