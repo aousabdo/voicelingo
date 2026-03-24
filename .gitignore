@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+dist/
+
+# Env
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Old R project
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+rsconnect/
