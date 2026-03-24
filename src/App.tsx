@@ -218,12 +218,16 @@ function App() {
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pb-16">
         {/* Input Section */}
         <div className="space-y-6 mb-10">
-          <ApiKeyInput value={apiKey} onChange={setApiKey} />
-          <AudioUpload
-            file={audioFile}
-            onFileChange={setAudioFile}
-            onBatchFiles={handleBatchFiles}
-          />
+          <div data-tour="api-key">
+            <ApiKeyInput value={apiKey} onChange={setApiKey} />
+          </div>
+          <div data-tour="audio-upload">
+            <AudioUpload
+              file={audioFile}
+              onFileChange={setAudioFile}
+              onBatchFiles={handleBatchFiles}
+            />
+          </div>
         </div>
 
         {/* Batch Panel */}
@@ -247,7 +251,7 @@ function App() {
         )}
 
         {/* Options bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div data-tour="options" className="flex flex-wrap items-center gap-3 mb-6">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -264,34 +268,37 @@ function App() {
 
         {/* Results Grid */}
         <div className="grid md:grid-cols-2 gap-6">
-          <ResultPanel
-            title="Transcription"
-            placeholder="Transcribed text will appear here..."
-            text={transcription}
-            onChange={setTranscription}
-            isLoading={isTranscribing}
-            onAction={handleTranscribe}
-            actionLabel="Transcribe"
-            onExport={transcription ? handleExportTranscription : undefined}
-            hasTimestamps={segments.length > 0}
-          />
-          <ResultPanel
-            title="Translation"
-            placeholder="Translated text will appear here..."
-            text={translation}
-            onChange={setTranslation}
-            isLoading={isTranslating}
-            onAction={handleTranslate}
-            actionLabel={`Translate to ${targetLang}`}
-            onExport={translation ? handleExportTranslation : undefined}
-          >
-            <LanguageSelector value={targetLang} onChange={setTargetLang} />
-          </ResultPanel>
+          <div data-tour="transcription">
+            <ResultPanel
+              title="Transcription"
+              placeholder="Transcribed text will appear here..."
+              text={transcription}
+              onChange={setTranscription}
+              isLoading={isTranscribing}
+              onAction={handleTranscribe}
+              actionLabel="Transcribe"
+              onExport={transcription ? handleExportTranscription : undefined}
+              hasTimestamps={segments.length > 0}
+            />
+          </div>
+          <div data-tour="translation">
+            <ResultPanel
+              title="Translation"
+              placeholder="Translated text will appear here..."
+              text={translation}
+              onChange={setTranslation}
+              isLoading={isTranslating}
+              onAction={handleTranslate}
+              actionLabel={`Translate to ${targetLang}`}
+              onExport={translation ? handleExportTranslation : undefined}
+            >
+              <LanguageSelector value={targetLang} onChange={setTargetLang} />
+            </ResultPanel>
+          </div>
         </div>
 
         {/* AI Actions row */}
-        {transcription && (
-          <div className="mt-6 grid sm:grid-cols-2 gap-4">
+        <div data-tour="ai-actions" className={`mt-6 grid sm:grid-cols-2 gap-4 ${!transcription ? 'opacity-40 pointer-events-none' : ''}`}>
             {/* Summarize */}
             <button
               onClick={handleSummarize}
@@ -323,8 +330,7 @@ function App() {
                 {isDiarizing ? 'Identifying Speakers...' : 'Identify Speakers'}
               </span>
             </button>
-          </div>
-        )}
+        </div>
 
         {/* Summary display */}
         {summary && (

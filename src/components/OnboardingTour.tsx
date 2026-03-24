@@ -1,97 +1,62 @@
-import { useState } from 'react'
-import {
-  KeyRound,
-  Upload,
-  Mic,
-  Languages,
-  Sparkles,
-  Users,
-  Clock,
-  Download,
-  Files,
-  ArrowRight,
-  ArrowLeft,
-  X,
-  Rocket,
-} from 'lucide-react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { ArrowRight, ArrowLeft, X } from 'lucide-react'
 
-interface Step {
-  icon: React.ReactNode
+interface TourStep {
+  target: string // CSS selector or 'center' for modal
   title: string
   description: string
-  color: string
+  position: 'top' | 'bottom' | 'left' | 'right'
 }
 
-const STEPS: Step[] = [
+const STEPS: TourStep[] = [
   {
-    icon: <Rocket className="w-8 h-8" />,
-    title: 'Welcome to VoiceLingo!',
+    target: 'center',
+    title: 'Welcome to VoiceLingo! 👋',
     description:
-      'AI-powered audio transcription & translation built by Analytica Data Science Solutions. Let us show you around.',
-    color: 'from-purple-500 to-indigo-500',
+      "AI-powered audio transcription & translation. Let's take a quick tour of all the features.",
+    position: 'bottom',
   },
   {
-    icon: <KeyRound className="w-8 h-8" />,
-    title: 'Enter Your API Key',
+    target: '[data-tour="api-key"]',
+    title: '1. Enter Your API Key 🔑',
     description:
-      'Paste your OpenAI API key to get started. It\'s saved securely in your browser and never sent anywhere except OpenAI.',
-    color: 'from-purple-500 to-violet-500',
+      "Paste your OpenAI API key here. It's saved in your browser's local storage — never sent anywhere except OpenAI. You only need to enter it once.",
+    position: 'bottom',
   },
   {
-    icon: <Upload className="w-8 h-8" />,
-    title: 'Upload or Record',
+    target: '[data-tour="audio-upload"]',
+    title: '2. Upload or Record Audio 🎵',
     description:
-      'Drag & drop audio files (MP3, WAV, M4A, etc.) or switch to Record mode to capture audio directly from your microphone.',
-    color: 'from-blue-500 to-cyan-500',
+      'Drag & drop audio files (MP3, WAV, M4A, etc.) or switch to Record mode to capture audio live from your microphone with pause/resume.',
+    position: 'bottom',
   },
   {
-    icon: <Mic className="w-8 h-8" />,
-    title: 'Live Microphone Recording',
+    target: '[data-tour="options"]',
+    title: '3. Options ⚙️',
     description:
-      'Record directly in the browser with pause/resume controls. Perfect for meetings, interviews, or quick voice notes.',
-    color: 'from-red-500 to-pink-500',
+      'Enable timestamps to get segment-level timing for your transcription — great for subtitles and captions.',
+    position: 'bottom',
   },
   {
-    icon: <Languages className="w-8 h-8" />,
-    title: 'Translate to 30+ Languages',
+    target: '[data-tour="transcription"]',
+    title: '4. Transcription Panel ✍️',
     description:
-      'Transcribe in any language, then translate to English, Spanish, Arabic, Chinese, French, and many more using GPT-4o.',
-    color: 'from-emerald-500 to-teal-500',
+      'Hit "Transcribe" and your audio text appears here. You can edit it, copy to clipboard, or export as .txt, .srt, or .vtt subtitle files.',
+    position: 'top',
   },
   {
-    icon: <Sparkles className="w-8 h-8" />,
-    title: 'AI Summarization',
+    target: '[data-tour="translation"]',
+    title: '5. Translation to 30+ Languages 🌍',
     description:
-      'Get an instant AI-generated summary of your transcription with key points and a TLDR — perfect for long recordings.',
-    color: 'from-amber-500 to-orange-500',
+      'Pick any target language from the dropdown — Spanish, Arabic, Chinese, French, and more. Translation is powered by GPT-4o for high quality results.',
+    position: 'top',
   },
   {
-    icon: <Users className="w-8 h-8" />,
-    title: 'Speaker Identification',
+    target: '[data-tour="ai-actions"]',
+    title: '6. AI Superpowers ✨',
     description:
-      'AI-powered speaker diarization labels different speakers in your conversation (Speaker 1, Speaker 2, etc.).',
-    color: 'from-cyan-500 to-blue-500',
-  },
-  {
-    icon: <Clock className="w-8 h-8" />,
-    title: 'Timestamps',
-    description:
-      'Get segment-level timestamps for your transcription. See exactly when each part was spoken.',
-    color: 'from-violet-500 to-purple-500',
-  },
-  {
-    icon: <Download className="w-8 h-8" />,
-    title: 'Export in Multiple Formats',
-    description:
-      'Download your results as plain text (.txt), subtitles (.srt), or WebVTT (.vtt) — ready for video editing or captions.',
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    icon: <Files className="w-8 h-8" />,
-    title: 'Batch Processing',
-    description:
-      'Drop multiple audio files at once and transcribe them all in one go. Download all results with a single click.',
-    color: 'from-indigo-500 to-blue-500',
+      'After transcribing, use "Summarize" for an instant AI summary with key points, or "Identify Speakers" to label who said what in a conversation.',
+    position: 'top',
   },
 ]
 
@@ -101,92 +66,254 @@ interface Props {
 
 export default function OnboardingTour({ onComplete }: Props) {
   const [currentStep, setCurrentStep] = useState(0)
+  const [rect, setRect] = useState<DOMRect | null>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
   const step = STEPS[currentStep]
   const isLast = currentStep === STEPS.length - 1
   const isFirst = currentStep === 0
+  const isCentered = step.target === 'center'
+
+  // Measure & scroll to target element
+  const measureTarget = useCallback(() => {
+    if (step.target === 'center') {
+      setRect(null)
+      return
+    }
+    const el = document.querySelector(step.target)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // Wait for scroll to settle then measure
+      setTimeout(() => {
+        const r = el.getBoundingClientRect()
+        setRect(r)
+      }, 350)
+    } else {
+      setRect(null)
+    }
+  }, [step.target])
+
+  useEffect(() => {
+    measureTarget()
+    window.addEventListener('resize', measureTarget)
+    return () => window.removeEventListener('resize', measureTarget)
+  }, [measureTarget])
+
+  // Tooltip positioning
+  const getTooltipStyle = (): React.CSSProperties => {
+    if (!rect || isCentered) {
+      return {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      }
+    }
+
+    const pad = 16
+    const tooltipW = Math.min(380, window.innerWidth - 32)
+
+    switch (step.position) {
+      case 'bottom':
+        return {
+          position: 'fixed',
+          top: rect.bottom + pad,
+          left: Math.max(16, Math.min(rect.left + rect.width / 2 - tooltipW / 2, window.innerWidth - tooltipW - 16)),
+          width: tooltipW,
+        }
+      case 'top':
+        return {
+          position: 'fixed',
+          bottom: window.innerHeight - rect.top + pad,
+          left: Math.max(16, Math.min(rect.left + rect.width / 2 - tooltipW / 2, window.innerWidth - tooltipW - 16)),
+          width: tooltipW,
+        }
+      case 'right':
+        return {
+          position: 'fixed',
+          top: rect.top + rect.height / 2 - 60,
+          left: rect.right + pad,
+          width: tooltipW,
+        }
+      case 'left':
+        return {
+          position: 'fixed',
+          top: rect.top + rect.height / 2 - 60,
+          right: window.innerWidth - rect.left + pad,
+          width: tooltipW,
+        }
+    }
+  }
+
+  // Arrow pointing from tooltip toward the target
+  const getArrowStyle = (): React.CSSProperties & { className?: string } => {
+    if (!rect || isCentered) return { display: 'none' }
+
+    const arrowSize = 10
+    switch (step.position) {
+      case 'bottom':
+        return {
+          position: 'absolute',
+          top: -arrowSize,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 0,
+          height: 0,
+          borderLeft: `${arrowSize}px solid transparent`,
+          borderRight: `${arrowSize}px solid transparent`,
+          borderBottom: `${arrowSize}px solid rgb(30, 30, 40)`,
+        }
+      case 'top':
+        return {
+          position: 'absolute',
+          bottom: -arrowSize,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 0,
+          height: 0,
+          borderLeft: `${arrowSize}px solid transparent`,
+          borderRight: `${arrowSize}px solid transparent`,
+          borderTop: `${arrowSize}px solid rgb(30, 30, 40)`,
+        }
+      default:
+        return { display: 'none' }
+    }
+  }
+
+  // Spotlight cutout via clip-path
+  const getOverlayClipPath = () => {
+    if (!rect) return 'none'
+    const p = 8 // padding around element
+    const x = rect.left - p
+    const y = rect.top - p
+    const w = rect.width + p * 2
+    const h = rect.height + p * 2
+    const r = 16 // border radius
+
+    // Create a polygon with a rounded-rect hole
+    return `
+      polygon(
+        0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
+        ${x + r}px ${y}px,
+        ${x + w - r}px ${y}px,
+        ${x + w}px ${y + r}px,
+        ${x + w}px ${y + h - r}px,
+        ${x + w - r}px ${y + h}px,
+        ${x + r}px ${y + h}px,
+        ${x}px ${y + h - r}px,
+        ${x}px ${y + r}px,
+        ${x + r}px ${y}px
+      )
+    `
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-50">
+      {/* Dark overlay with spotlight cutout */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/75 transition-all duration-300"
+        style={{
+          clipPath: rect ? getOverlayClipPath() : 'none',
+        }}
         onClick={onComplete}
       />
+      {/* If no clip-path (centered modal), just a regular overlay */}
+      {!rect && (
+        <div className="absolute inset-0 bg-black/75" onClick={onComplete} />
+      )}
 
-      {/* Card */}
-      <div className="relative w-full max-w-md animate-in fade-in zoom-in">
-        <div className="rounded-3xl bg-gray-900 border border-white/10 shadow-2xl shadow-purple-500/10 overflow-hidden">
-          {/* Close button */}
+      {/* Spotlight ring around target */}
+      {rect && (
+        <div
+          className="absolute pointer-events-none rounded-2xl ring-2 ring-purple-500/60 transition-all duration-300"
+          style={{
+            top: rect.top - 8,
+            left: rect.left - 8,
+            width: rect.width + 16,
+            height: rect.height + 16,
+            boxShadow: '0 0 0 4000px rgba(0,0,0,0.75), 0 0 30px 4px rgba(168,85,247,0.3)',
+          }}
+        />
+      )}
+
+      {/* Tooltip */}
+      <div
+        ref={tooltipRef}
+        style={getTooltipStyle()}
+        className="z-50 pointer-events-auto"
+      >
+        {/* Arrow */}
+        <div style={getArrowStyle()} />
+
+        <div className="bg-[rgb(30,30,40)] border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
+          {/* Close */}
           <button
             onClick={onComplete}
-            className="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:text-white hover:bg-white/10 transition-colors z-10"
+            className="absolute top-3 right-3 p-1.5 rounded-full text-gray-500 hover:text-white hover:bg-white/10 transition-colors z-10"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
 
-          {/* Icon header */}
-          <div className={`bg-gradient-to-br ${step.color} p-8 flex items-center justify-center`}>
-            <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-lg">
-              {step.icon}
-            </div>
-          </div>
-
           {/* Content */}
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+          <div className="p-5 pr-10">
+            <h3 className="text-base font-bold text-white mb-1.5">{step.title}</h3>
             <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
           </div>
 
-          {/* Progress dots */}
-          <div className="flex items-center justify-center gap-1.5 pb-4">
-            {STEPS.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentStep(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === currentStep
-                    ? 'w-6 bg-purple-500'
-                    : i < currentStep
-                      ? 'w-1.5 bg-purple-500/50'
-                      : 'w-1.5 bg-white/20'
-                }`}
-              />
-            ))}
-          </div>
+          {/* Footer */}
+          <div className="flex items-center justify-between px-5 pb-4">
+            {/* Dots */}
+            <div className="flex items-center gap-1">
+              {STEPS.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === currentStep
+                      ? 'w-5 bg-purple-500'
+                      : i < currentStep
+                        ? 'w-1.5 bg-purple-500/50'
+                        : 'w-1.5 bg-white/15'
+                  }`}
+                />
+              ))}
+            </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between px-6 pb-6">
-            <button
-              onClick={() => (isFirst ? onComplete() : setCurrentStep(currentStep - 1))}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              {isFirst ? (
-                'Skip tour'
-              ) : (
-                <>
-                  <ArrowLeft className="w-4 h-4" />
+            {/* Buttons */}
+            <div className="flex items-center gap-2">
+              {!isFirst && (
+                <button
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <ArrowLeft className="w-3 h-3" />
                   Back
-                </>
+                </button>
               )}
-            </button>
-
-            <button
-              onClick={() => (isLast ? onComplete() : setCurrentStep(currentStep + 1))}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium text-white transition-all active:scale-[0.97] ${
-                isLast
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 shadow-lg shadow-emerald-500/20'
-                  : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-lg shadow-purple-500/20'
-              }`}
-            >
-              {isLast ? (
-                "Let's Go!"
-              ) : (
-                <>
-                  Next
-                  <ArrowRight className="w-4 h-4" />
-                </>
+              {isFirst && (
+                <button
+                  onClick={onComplete}
+                  className="px-3 py-1.5 rounded-lg text-xs text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  Skip
+                </button>
               )}
-            </button>
+              <button
+                onClick={() => (isLast ? onComplete() : setCurrentStep(currentStep + 1))}
+                className={`flex items-center gap-1 px-4 py-1.5 rounded-lg text-xs font-medium text-white transition-all active:scale-[0.97] ${
+                  isLast
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/20'
+                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg shadow-purple-500/20'
+                }`}
+              >
+                {isLast ? (
+                  "Got it!"
+                ) : (
+                  <>
+                    Next
+                    <ArrowRight className="w-3 h-3" />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
